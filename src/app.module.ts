@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { User } from "./users/users.model";
 import { RolesModule } from "./roles/roles.module";
 import { Role } from "./roles/roles.model";
+import { UserRole } from "./roles/user-role.model";
 
 @Module({
   controllers: [],
@@ -20,7 +21,7 @@ import { Role } from "./roles/roles.model";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Role],
+      models: [User, Role, UserRole],
       autoLoadModels: true, //ask to create tables out of our models
     }),
     UsersModule,

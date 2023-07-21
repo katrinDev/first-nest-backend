@@ -7,7 +7,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Role } from "src/roles/roles.model";
-import { UserRoles } from "src/roles/user-roles.model";
+import { UserRole } from "src/roles/user-role.model";
 
 //fields that are needed for an object creation out of User model class
 interface UserCreationAttrs {
@@ -45,6 +45,6 @@ export class User extends Model<User, UserCreationAttrs> {
   @Column({ type: DataType.STRING, allowNull: true })
   banReason: string;
 
-  @BelongsToMany(() => Role, () => UserRoles)
+  @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
 }
