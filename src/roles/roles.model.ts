@@ -33,7 +33,7 @@ export class Role extends Model<Role, RoleCreationAttr> {
   @Column({ type: DataType.STRING, allowNull: false })
   description: string;
 
-  //which entity we connect to, additional table for that
+  //which entity we connect to + additional table for that
   @BelongsToMany(() => User, () => UserRole)
   users: User[];
 }
