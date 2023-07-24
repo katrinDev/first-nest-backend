@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user-dto";
 import { UsersService } from "src/users/users.service";
 import { JwtService } from "@nestjs/jwt/dist";
@@ -12,7 +17,10 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async login(userDto: CreateUserDto) {}
+  async login(userDto: CreateUserDto) {
+    const user = await this.validateUser(userDto);
+    return this.generateToken(user);
+  }
 
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByEmail(userDto.email);
@@ -32,7 +40,7 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  async generateToken(user: User) {
+  private async generateToken(user: User) {
     const payload = {
       email: user.email,
       id: user.id,
@@ -42,5 +50,21 @@ export class AuthService {
     return {
       token: this.jwtService.sign(payload), //we don't need to add any options, cuz we've done it in JwtModule registration
     };
+  }
+
+  private async validateUser(userDto: CreateUserDto) {
+    const user = await this.userService.getUserByEmail(userDto.email);
+    let passwordEquals: boolean;
+    if (user) {
+      passwordEquals = await bcrypt.compare(userDto.password, user.password);
+    }
+
+    if (user && passwordEquals) {
+      return user; //it's a Promise!!
+    }
+
+    throw new UnauthorizedException({
+      message: "Некорректный email и пароль!",
+    });
   }
 }
