@@ -4,7 +4,7 @@ import {
   Post,
   Get,
   UseGuards,
-  BadRequestException,
+  UsePipes,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -15,6 +15,7 @@ import { RolesGuard } from "src/auth/roles.guard";
 import { Roles } from "src/auth/roles.decorator";
 import { AddRoleDto } from "./dto/add-role.dto";
 import { BanUserDto } from "./dto/ban-user.dto";
+import { ValidationPipe } from "src/pipes/validation.pipe";
 
 @ApiTags("Пользователи")
 @Controller("users")
@@ -23,8 +24,9 @@ export class UsersController {
 
   @ApiOperation({ summary: "Создание пользователя" })
   @ApiResponse({ status: 200, type: User })
+  @UsePipes(ValidationPipe)
   @Post()
-  create(@Body() userDto: CreateUserDto) {
+  create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.userService.createUser(userDto);
   }
 
