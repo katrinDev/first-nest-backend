@@ -11,6 +11,8 @@ import { User } from "src/users/users.model";
 interface PostCreationAttr {
   title: string;
   content: string;
+  userId: number;
+  image: string; //image name
 }
 
 @Table({ tableName: "posts" })
